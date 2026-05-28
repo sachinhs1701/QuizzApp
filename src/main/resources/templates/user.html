@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>User Form</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container{
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0px 0px 10px gray;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button{
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background-color: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2>User Form</h2>
+
+        <input type="number"
+               id="userid"
+               placeholder="Enter Id">
+
+        <input type="text"
+               id="name"
+               placeholder="Enter Name">
+
+        <input type="text"
+               id="catagory"
+               placeholder="Enter Category">
+
+        <button onclick="sendData()">
+
+            Submit
+
+        </button>
+
+    </div>
+
+
+
+    <script>
+
+        function sendData()
+        {
+
+            const userData = {
+
+                userid: document.getElementById("userid").value,
+
+                name: document.getElementById("name").value,
+
+                catagory: document.getElementById("catagory").value
+            };
+
+
+
+            fetch("/inn/start", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(userData)
+
+            })
+
+            .then(response => response.text())
+
+            .then(data => {
+
+                window.location.href = data;
+
+            })
+
+            .catch(error => {
+
+                console.log(error);
+
+            });
+
+        }
+
+    </script>
+
+</body>
+
+</html>

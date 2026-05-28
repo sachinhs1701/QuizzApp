@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Quiz Application</title>
+
+    <style>
+
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .question-box{
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 5px gray;
+        }
+
+        button{
+            padding: 10px 20px;
+            border: none;
+            background-color: blue;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>Quiz</h1>
+
+    <div id="quizContainer"></div>
+
+    <button onclick="submitQuiz()">
+        Submit Quiz
+    </button>
+
+
+
+    <script>
+
+        let questions = [];
+
+
+        // Get category from URL
+
+        const params = new URLSearchParams(window.location.search);
+
+        const category = params.get("cat");
+
+        console.log("Category:", category);
+
+
+
+
+        // Fetch Questions
+
+        fetch(`/inn/quizz/${category}`)
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            console.log("Questions:", data);
+
+            questions = data;
+
+            displayQuestions();
+
+        })
+
+        .catch(error => {
+
+            console.log(error);
+
+        });
+
+
+
+
+
+
+        function displayQuestions()
+        {
+
+            const container = document.getElementById("quizContainer");
+
+            container.innerHTML = "";
+
+
+            questions.forEach((q,index)=>{
+
+
+                const div = document.createElement("div");
+
+                div.className = "question-box";
+
+
+
+                div.innerHTML = `
+
+                    <h3>
+
+                        ${index + 1}. 
+                        ${q.questiontitle || q.questionTitle}
+
+                    </h3>
+
+
+
+                    <input type="radio"
+                           name="question${q.id}"
+                           value="${q.option1}">
+
+                    ${q.option1}
+
+                    <br><br>
+
+
+
+
+                    <input type="radio"
+                           name="question${q.id}"
+                           value="${q.option2}">
+
+                    ${q.option2}
+
+                    <br><br>
+
+
+
+
+                    <input type="radio"
+                           name="question${q.id}"
+                           value="${q.option3}">
+
+                    ${q.option3}
+
+                    <br><br>
+
+
+
+
+                    <input type="radio"
+                           name="question${q.id}"
+                           value="${q.option4}">
+
+                    ${q.option4}
+
+                    <br><br>
+
+                `;
+
+
+                container.appendChild(div);
+
+            });
+
+        }
+
+
+
+
+
+
+
+
+        function submitQuiz()
+        {
+
+            let answers = [];
+
+
+            questions.forEach((q)=>{
+
+
+                const selectedOption = document.querySelector(
+
+                    `input[name="question${q.id}"]:checked`
+
+                );
+
+
+
+                answers.push({
+
+                    questionId: q.id,
+
+                    selectedAnswer: selectedOption
+                        ? selectedOption.value
+                        : null
+
+                });
+
+            });
+
+
+
+            console.log(answers);
+
+
+
+
+            fetch("/inn/submit",{
+
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body: JSON.stringify(answers)
+
+            })
+
+            .then(response => response.text())
+
+            .then(data => {
+
+                alert(data);
+
+            })
+
+            .catch(error => {
+
+                console.log(error);
+
+            });
+
+        }
+
+    </script>
+
+</body>
+
+</html>

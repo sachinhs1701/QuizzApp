@@ -30,4 +30,10 @@ public class QuestionService {
 		quizz1.save(q1);
 		return true; 
 	}
+	public boolean deletequestion(long id)
+	{
+	
+		quizz1.deleteById(id);
+		return true;
+		}
 }
